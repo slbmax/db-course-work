@@ -65,7 +65,7 @@ namespace DataGenerator
                 {
                     name = names[rand.Next(0,names.Length)],
                     brand = brands[rand.Next(0,brands.Length)],
-                    cost = rand.Next(5,201),
+                    cost = rand.Next(10,700),
                     country_of_origin = countries[rand.Next(0,countries.Length)]
                 });
             }
@@ -119,7 +119,6 @@ namespace DataGenerator
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             service.orderRepository.GenerateOrders(amount);
-            Console.WriteLine("Stage1o:"+sw.Elapsed);
             Console.WriteLine("[Gen. Orders] Elapsed: "+sw.Elapsed);
             sw.Stop();
         }
@@ -141,7 +140,7 @@ namespace DataGenerator
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             service.reviewRepository.GenerateReviews(amount);
-            Console.WriteLine("Stage1r:"+sw.Elapsed);
+            Console.WriteLine("[Gen. Reviews] Elapsed:"+sw.Elapsed);
             sw.Stop();
         }
         public static int GetAmountOfEntities()
@@ -172,4 +171,5 @@ namespace DataGenerator
         public string fwnames;
         public string emails;
     }
+    
 }

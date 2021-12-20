@@ -16,7 +16,7 @@ namespace Model
         public override string ToString()
         {
             return string.Format(@$"[{id}] Client id: {client_id}; payment method: "+
-            "{payment_method}; checkout date: {checkout_date.ToShortDateString()} ");
+            $"{payment_method}; checkout date: {checkout_date.ToShortDateString()} ");
         }
     }
 }

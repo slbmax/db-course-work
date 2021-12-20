@@ -44,6 +44,7 @@ namespace Model
                 .WithMany(t => t.reviews)
                 .HasForeignKey(p => p.product_id)
                 .HasPrincipalKey(t=>t.id);
+                
 
             modelBuilder.Entity<Order>()
                 .HasOne(p => p.client)

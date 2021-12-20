@@ -14,7 +14,7 @@ namespace Model
 
         public override string ToString()
         {
-            return string.Format($"[{id} {fullname} [{birthday_date.ToShortDateString()}]] [{email}]");
+            return string.Format($"[{id}] {fullname} [{birthday_date.ToShortDateString()}] [{email}]");
             
         }
     }
