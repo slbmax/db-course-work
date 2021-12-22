@@ -9,15 +9,49 @@ namespace Model
         public OrderItemRepository orderItemRepository;
         public ReviewRepository reviewRepository;
         public ClientRepository clientRepository;
-        private ServiceContext context;
+        public ServiceContext context;
+        public ServiceContext replica;
         public Service()
         {
-            this.context = new ServiceContext();
+            CreateContext();
             this.footwearRepository = new FootwearRepository(context);
             this.orderRepository = new OrderRepository(context);
             this.reviewRepository = new ReviewRepository(context);
             this.orderItemRepository = new OrderItemRepository(context);
             this.clientRepository = new ClientRepository(context);
+        }
+        public void CreateContext()
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ServiceContext>();
+            context = new ServiceContext("Host=localhost;Database=online_shop;Username=postgres;Password=valdorette");
+            var result = -1;
+            using (var command = context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM pg_publication";
+                context.Database.OpenConnection();
+                using (var reader = command.ExecuteReader())
+                    if (reader.Read())
+                        result = reader.GetInt32(0);
+                context.Database.CloseConnection();
+            }
+
+            if (result == 0)
+                context.Database.ExecuteSqlRaw("CREATE PUBLICATION logical_pub FOR ALL TABLES;");
+
+            using (var command = context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM pg_replication_slots";
+                context.Database.OpenConnection();
+                using (var reader = command.ExecuteReader())
+                    if (reader.Read())
+                        result = reader.GetInt32(0);
+                context.Database.CloseConnection();
+            }
+
+            if (result == 0)
+                context.Database.ExecuteSqlRaw("SELECT * FROM pg_create_logical_replication_slot('logical_slot', 'pgoutput');");
+            replica = new ServiceContext("Host=localhost;Database=new_online_shop;Username=postgres;Password=valdorette");
+            replica.CreateSubscription();
         }
     }
     public class ServiceContext : DbContext
@@ -28,9 +62,37 @@ namespace Model
         public DbSet<OrderItem> order_items { get; set; }
         public DbSet<Client> clients { get; set; }
 
+        public string connectionString { get; set; }
+        public ServiceContext(string connectionString)
+        {
+            this.connectionString = connectionString;
+            Database.EnsureCreated();
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseNpgsql($@"Host=localhost;Username=postgres;
-            Password=valdorette;Database=online-shop");
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseNpgsql(connectionString);
+            }
+        }
+        public void CreateSubscription()
+        {
+            var result = -1;
+            using (var command = this.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = "SELECT COUNT(*) FROM pg_subscription";
+                this.Database.OpenConnection();
+                using (var reader = command.ExecuteReader())
+                    if (reader.Read())
+                        result = reader.GetInt32(0);
+                this.Database.CloseConnection();
+            }
+            if (result == 0)
+                this.Database.ExecuteSqlRaw("CREATE SUBSCRIPTION logical_sub\n" +
+                                            "CONNECTION 'host=localhost port=5432 user=postgres password=valdorette dbname=online_shop'\n" +
+                                            "PUBLICATION logical_pub\n" +
+                                            "WITH(create_slot = false, slot_name = 'logical_slot');");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Review>()

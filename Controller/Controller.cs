@@ -3,6 +3,7 @@ using Model;
 using ViewLib;
 using System.Collections.Generic;
 using Visualization;
+using System.IO;
 using System.Diagnostics;
 namespace ControllerLib
 {
@@ -419,7 +420,6 @@ namespace ControllerLib
             List<int> ratings = _service.reviewRepository.GetRatingsByProductId(id);
             View.FootwearRatingsChart(ratings, fw.name+ " by " + fw.brand);
         }
-
         public void GenerateProductReport(int id)
         {
             Footwear fw = _service.footwearRepository.GetById(id);
@@ -571,5 +571,6 @@ namespace ControllerLib
             }
             View.IncomesStatisticsChart(incomes, year);
         }
+
     }
 }

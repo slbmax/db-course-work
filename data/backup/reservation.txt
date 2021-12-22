@@ -1,0 +1,25 @@
+cd "Program Files\PostgreSQL\10\bin"
+
+-------Back up-------
+pg_dump -U postgres -W online_shop > C:\Users\Макс\myprojects\db_coursework\data\backup\backup.sql
+-------Back up-------
+
+-------Restore-------
+Postgre:
+
+UPDATE pg_database SET datallowconn = 'false' WHERE datname = 'online_shop'
+
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'online_shop'
+
+DROP DATABASE online_shop
+CREATE DATABASE online_shop
+
+psql -U postgres -W online_shop < C:\Users\Макс\myprojects\db_coursework\data\backup\backup.sql
+-------Restore-------
+
+
+
+
+
+------Additional-------
+psql -U postgres -c "UPDATE pg_database SET datallowconn = 'true' WHERE datname = 'online_shop'"

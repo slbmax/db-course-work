@@ -5,15 +5,22 @@ namespace ControllerLib
     public static class GUIController
     {
         public static void RunConsoleInterface(Controller controller)
-        { 
+        {
+            Console.Clear();
             Console.WriteLine("Hello!");
             while(true)
             {
-                Console.WriteLine("\nSelect the entity to work with:\n1.Footwear\n2.Order"
-                +"\n3.Client\n4.Review\n\n\n5.[Chart] Ratings of certain product\n"+
-                "6.[Chart] Age groups of product\n7.[Chart] Hash index chart\n"+
-                "8.[Chart] B-tree index chart\n9.[Chart] Incomes statistics (of the special year)"+
-                "\n10.Generate product report\n11.Exit");
+                Console.WriteLine("\nSelect the entity to work with:\n1.Footwear\n2.Order\n3.Client\n4.Review");
+                Console.WriteLine();
+                Console.WriteLine("Statistics:");
+                Console.WriteLine("5.[Chart] Ratings of certain product\n6.[Chart] Age groups of product");
+                Console.WriteLine("7.[Chart] Incomes statistics (of the special year)\n8.Generate product report");
+                Console.WriteLine();
+                Console.WriteLine("Additional features:");
+                Console.WriteLine("9.[Chart] Hash index chart\n10.[Chart] B-tree index chart");
+                Console.WriteLine();
+                Console.WriteLine("11.Exit");
+                Console.WriteLine();
                 int option;
                 bool num = int.TryParse(Console.ReadLine(), out option);
                 if(!num){Console.WriteLine("\n--Wrong option--\n"); continue;}
@@ -37,16 +44,16 @@ namespace ControllerLib
                     case 6:
                         controller.GenerateFootwearAgeCategoriesChart(GetIdOfEntity("footwear","get age groups"));
                         break;
-                    case 7:
+                    case 9:
                         controller.GenerateHashIndexChart();
                         break;
-                    case 8:
+                    case 10:
                         controller.GenerateBtreeIndexChart();
                         break;
-                    case 9:
+                    case 7:
                         ProcessIncomesStatisticsChart(controller);
                         break;
-                    case 10:
+                    case 8:
                         controller.GenerateProductReport(GetIdOfEntity("footwear", "generate report"));
                         break;
                     case 11:
@@ -146,7 +153,6 @@ namespace ControllerLib
             string pairOrigin = Console.ReadLine();
             controller.UpdateFootwear(product_id, pairName, pairBrand, pairCost, pairOrigin);
         }
-
         public static void ProcessCostRangeFootwear(Controller controller)
         {
             Console.WriteLine("Enter pair name:");
@@ -169,7 +175,6 @@ namespace ControllerLib
             }
             controller.GetFootwearByRangeCost(pn,lp,hp);
         }
-
         public static void ProcessOrderOptions(Controller controller)
         {
             while(true)
@@ -223,7 +228,6 @@ namespace ControllerLib
             }
             controller.InsertOrder(client_id, pm, order_items, DateTime.Now);
         }
-
         public static void ProcessReviewOptions(Controller controller)
         {
             while(true)
@@ -303,7 +307,6 @@ namespace ControllerLib
             }
             controller.UpdateReview(review_id, content, rating);
         }
-
         public static void ProcessClientOptions(Controller controller)
         {
             while(true)
@@ -383,7 +386,6 @@ namespace ControllerLib
             }
             controller.UpdateClient(client_id, name, birthDate, email);
         }
-
         public static void ProcessFootwearRatings(Controller controller)
         {
             int id = GetIdOfEntity("product","check product ratings");

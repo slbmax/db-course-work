@@ -1,0 +1,5 @@
+psql --command "UPDATE pg_database SET datallowconn = 'false' WHERE datname = 'online_shop'" "host=localhost port=5432 dbname=postgres user=postgres password=valdorette"
+psql --command "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'online_shop'" "host=localhost port=5432 dbname=postgres user=postgres password=valdorette"
+psql --command "DROP DATABASE online_shop" "host=localhost port=5432 dbname=postgres user=postgres password=valdorette"
+psql --command "CREATE DATABASE online_shop" "host=localhost port=5432 dbname=postgres user=postgres password=valdorette"
+psql -f %1 "host=localhost port=5432 dbname=online_shop user=postgres password=valdorette"

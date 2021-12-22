@@ -100,6 +100,9 @@ namespace Model
         {
             return context.reviews.Where(x => x.product_id == fw_id).Average(o => o.rating);
         }
+
+
+
         public int GetCount()
         {
             return context.reviews.Count<Review>();

@@ -96,7 +96,6 @@ namespace Model
                     result.Add(Convert.ToDouble(command.ExecuteScalar()));
                 }
             }
-            catch (System.Exception e) { Console.WriteLine(e.Message);}
             finally { connection.Close(); }
             return result;
         }

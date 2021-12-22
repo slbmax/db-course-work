@@ -4,6 +4,7 @@ namespace Model
     {
         public int product_id {get; set; }
         public int order_id {get; set; }
+        public int id {get; set; }
 
         public Order order {get; set; }
         public Footwear footwear {get; set; }
